@@ -77,7 +77,8 @@ function beginApp() {
 
 // Function that adds an employee
 function addEmployee() {
-    inquirer.prompt({
+    inquirer.prompt([
+    {
         type: "input",
         name: "firstName",
         message: "Enter the employee's first name."
@@ -97,7 +98,7 @@ function addEmployee() {
         type: "input",
         name: "manager",
         message: "Who is this employee's manager?"
-    }).then(userInput => {
+    }]).then(userInput => {
         connection.query("INSERT INTO employee SET ?",
         {
             first_name: userInput.firstName,
@@ -159,7 +160,7 @@ function addEmDepartment() {
 }
 
 
-//function to view emplloyees by department
+// Function to view all departments
 function viewByDepartment(){
     connection.query("SELECT name FROM department", function(err, result){
       if (err) {
@@ -169,4 +170,4 @@ function viewByDepartment(){
           beginApp();
         }
     });
-  }
+}
