@@ -32,7 +32,7 @@ function beginApp() {
         choices: 
         [
             "View All Employees",
-            "View All Employees by Department",
+            "View Current Departments",
             "View Employee Roles",
             "Add Employee",
             "Add Employee Role",
@@ -47,7 +47,7 @@ function beginApp() {
             case "View All Employees":
                 viewEmployees();
                 break;
-            case "View All Employees by Department":
+            case "View Current Departments":
                 viewByDepartment();
                 break;
             case "View Employee Roles":
@@ -71,6 +71,102 @@ function beginApp() {
             case "Quit":
                 console.log("Goodbye!")
                 connection.end();
+        }
+    });
+}
+
+// Function that adds an employee
+function addEmployee() {
+    inquirer.prompt({
+        type: "input",
+        name: "firstName",
+        message: "Enter the employee's first name."
+    },
+    {
+        type: "input",
+        name: "lastName",
+        message: "Enter the employee's last name."
+    },
+    {
+        type: "list",
+        name: "role",
+        message: "What is the employee's role?",
+        choices: ["Manager", "Intern", "Engineer"]
+    },
+    {
+        type: "input",
+        name: "manager",
+        message: "Who is this employee's manager?"
+    }).then(userInput => {
+        connection.query("INSERT INTO employee SET ?",
+        {
+            first_name: userInput.firstName,
+            last_name: userInput.lastName,
+            role_id: userInput.role,
+            manager_id: userInput.manager
+        },
+        function(err, result){
+            if (err) {
+                throw err;
+            } else {
+                console.log("Employee added!")
+                console.table(result);
+                beginApp();
+            }
+        });
+    });
+}
+
+// Function to view all employees
+function viewEmployees() {
+    connection.query("SELECT * FROM employee", (err, result) => {
+        if (err) {
+            throw err;
+        } else {
+            console.table(result);
+        }
+    });
+}
+
+// sales, engineering, legal, finance
+// Function to view all employees by department
+function viewByDepartment() {
+    connection.query("SELECT * FROM department ")
+}
+
+// Function to add department. This will create a new department if needed by
+// the employer. If there is no "sales" department, they may add it in.
+function addEmDepartment() {
+    inquirer.prompt({
+        type: "input",
+        name: "departmentName",
+        message: "Please enter the department name you would like to add."
+    }).then(userInput => {
+        connection.query("INSERT INTO department SET ?", 
+        {
+            name: userInput.departmentName
+        }, 
+        function(err, result){
+            if(err) {
+                throw err;
+            } else {
+                console.log("Department added!");
+                console.table(userInput);
+                beginApp();
+            }
+        });
+    });
+}
+
+
+//function to view emplloyees by department
+function viewByDepartment(){
+    connection.query("SELECT name FROM department", function(err, result){
+      if (err) {
+        throw err 
+        } else {
+          console.table(result);
+          beginApp();
         }
     });
   }
