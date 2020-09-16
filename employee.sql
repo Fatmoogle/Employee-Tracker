@@ -33,6 +33,5 @@ SELECT * FROM department;
 SELECT * FROM role;
 SELECT * FROM employee;
 
-Error Code: 1452. Cannot add or update a child row: a foreign key constraint fails (`employee_db`.`employee`, CONSTRAINT `employee_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE CASCADE)
 
 
