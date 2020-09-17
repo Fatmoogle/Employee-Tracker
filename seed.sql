@@ -39,23 +39,23 @@ VALUES ("Legal Team Lead", 70000.00, 4);
 
 /* Adding employees into the table: employee */
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Alex", "Varela", 3, 1);
+VALUES ("Alex", "Varela", 3, null);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("John", "Stiglitz", 4, null);
+VALUES ("John", "Stiglitz", 4, 1111);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Jen", "Koontz", 4, null);
+VALUES ("Jen", "Koontz", 4, 1111);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Caleb", "Barnes", 1, 2);
+VALUES ("Caleb", "Barnes", 1, null);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("James", "Rolex", 2, null);
+VALUES ("James", "Rolex", 2, 2222);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Drew", "Albacore", 7, 3);
+VALUES ("Drew", "Albacore", 7, null);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Sandra", "Nanners", 6, null);
+VALUES ("Sandra", "Nanners", 6, 3333);
 

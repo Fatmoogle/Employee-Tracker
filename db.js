@@ -77,65 +77,112 @@ function beginApp() {
 
 // Function that adds an employee
 function addEmployee() {
-    inquirer.prompt([
-    {
-        type: "input",
-        name: "firstName",
-        message: "Enter the employee's first name."
-    },
-    {
-        type: "input",
-        name: "lastName",
-        message: "Enter the employee's last name."
-    },
-    {
-        type: "list",
-        name: "role",
-        message: "What is the employee's role?",
-        choices: 
-        [
-            "Sales Lead", 
-            "Salesperson", 
-            "Lead Engineer",
-            "Software Engineer",
-            "Accountant",
-            "Lawyer",
-            "Legal Team Lead"
-        ]
-    },
-    {
-        type: "list",
-        name: "manager",
-        message: "Who is this employee's manager?",
-        choices:
-        [
-            "Alex Varela",
-            "Caleb Barnes",
-            "Drew Albacore"
-        ]
-    }]).then(userInput => {
-        connection.query("INSERT INTO employee SET ?",
-        {
-            first_name: userInput.firstName,
-            last_name: userInput.lastName,
-            role_id: userInput.role,
-            manager_id: userInput.manager
-        },
-        function(err, result){
-            if (err) {
-                throw err;
-            } else {
-                console.log("Employee added!")
-                console.table(result);
-                beginApp();
+    connection.query("SELECT title FROM role", (err, result) => {
+        let roles = [];
+        for(var i = 0; i < result.length; i++) {
+            roles.push(result[i].title);
+        }
+        // console.log(roles);
+        inquirer.prompt([
+            {
+                type: "input",
+                name: "firstName",
+                message: "Enter the employee's first name."
+            },
+            {
+                type: "input",
+                name: "lastName",
+                message: "Enter the employee's last name."
+            },
+            {
+                type: "list",
+                name: "role",
+                message: "What is the employee's role?",
+                choices: roles
+                // roles as the choices should give the current up to date list of
+                // current roles in the database
             }
-        });
+            // The bonus is to get managers functioning, but it is currently a 
+            // work in progress.
+            // {
+            //     type: "list",
+            //     name: "manager",
+            //     message: "Who is this employee's manager?",
+            //     choices:
+            //     [
+            //         "Alex Varela",
+            //         "Caleb Barnes",
+            //         "Drew Albacore"
+            //     ]
+            // }
+        ]).then(userInput => {
+                connection.query("INSERT INTO employee SET ?",
+                {
+                    first_name: userInput.firstName,
+                    last_name: userInput.lastName,
+                    role_id: userInput.role,
+                    // manager_id: userInput.manager
+                },
+                function(err, result){
+                    if (err) {
+                        throw err;
+                    } else {
+                        console.log("Employee added!")
+                        console.table(result);
+                        beginApp();
+                    }
+                });
+            });
+    })
+
+}
+
+// Function to add employee role
+function addEmRole() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "Title",
+            message: "Please enter the title of the position."
+        },
+        {
+            name: "Salary",
+            type: "input",
+            message: "Please enter the salary for this role."
+        },
+        {
+            name: "DepartmentID",
+            type: "input",
+            message: "What is the department id for this role? Please enter a number. \n1. Sales \n2. Finance \n3. Engineering \n4. Legal \n"
+        }
+      ]).then((userInput) => {
+      connection.query("INSERT INTO role SET ?", 
+        { 
+        title: userInput.Title, 
+        salary: userInput.Salary, 
+        department_id: userInput.DepartmentID
+        }, 
+        function(err, result) {
+        if (err) {
+            throw err;
+        } else {
+            console.log("New role added!");
+            console.table(userInput); 
+            beginApp();
+        }
+      });
     });
 }
 
+// Function to update employee role
+function updateEmRole() {
+
+};
+
+
 // Function to view all employee roles
 function viewRoles() {
-    connection.query("SELECT title FROM role;", (err, result) => {
+    connection.query("SELECT title, salary, department_id FROM role;", (err, result) => {
         if (err) {
             throw err;
         } else {
@@ -147,11 +194,12 @@ function viewRoles() {
 
 // Function to view all employees
 function viewEmployees() {
-    connection.query("SELECT first_name, last_name, manager_id FROM employee;", (err, result) => {
+    connection.query("SELECT first_name, last_name, title, salary, manager_id FROM employee JOIN role ON employee.role_id = role.id", (err, result) => {
         if (err) {
             throw err;
         } else {
             console.table(result);
+            beginApp();
         }
     });
 }
