@@ -116,25 +116,45 @@ function addEmployee() {
             //     ]
             // }
         ]).then(userInput => {
-                connection.query("INSERT INTO employee SET ?",
-                {
-                    first_name: userInput.firstName,
-                    last_name: userInput.lastName,
-                    role_id: userInput.role,
-                    // manager_id: userInput.manager
-                },
-                function(err, result){
-                    if (err) {
-                        throw err;
-                    } else {
-                        console.log("Employee added!")
-                        console.table(result);
-                        beginApp();
-                    }
-                });
+            // console.log(roles.indexOf("Salesperson"));
+            const index = roles.indexOf(userInput.role) + 1;
+            console.log(index);
+            connection.query("INSERT INTO employee SET ?",
+            {
+                first_name: userInput.firstName,
+                last_name: userInput.lastName,
+                role_id: index,
+                // manager_id: userInput.manager
+            },
+            function(err, result){
+                if (err) {
+                    throw err;
+                } else {
+                    console.log("Employee added!")
+                    console.table(result);
+                    beginApp();
+                }
             });
-    })
+        });
+    });
 
+}
+
+// Function to update employee role
+function updateEmRole() {
+
+};
+
+// Function to view all employees
+function viewEmployees() {
+    connection.query("SELECT first_name, last_name, title, salary, manager_id FROM employee JOIN role ON employee.role_id = role.id", (err, result) => {
+        if (err) {
+            throw err;
+        } else {
+            console.table(result);
+            beginApp();
+        }
+    });
 }
 
 // Function to add employee role
@@ -174,27 +194,11 @@ function addEmRole() {
     });
 }
 
-// Function to update employee role
-function updateEmRole() {
-
-};
 
 
 // Function to view all employee roles
 function viewRoles() {
     connection.query("SELECT title, salary, department_id FROM role;", (err, result) => {
-        if (err) {
-            throw err;
-        } else {
-            console.table(result);
-            beginApp();
-        }
-    });
-}
-
-// Function to view all employees
-function viewEmployees() {
-    connection.query("SELECT first_name, last_name, title, salary, manager_id FROM employee JOIN role ON employee.role_id = role.id", (err, result) => {
         if (err) {
             throw err;
         } else {
