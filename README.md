@@ -36,6 +36,10 @@ In order to install the application, simply go to your node terminal, and type i
 
 To use it, you can go to your terminal for node and type in "node db.js" and it will begin to ask you questions. You may manuever through the questions with the arrow keys on your keyboard.
 
+As a note, make sure you set your password for the mysql.connection to your own personal password! This is essential in creating the connection to the database.
+
+![](Assets/Images/password.PNG)
+
 
 ## Credits
 
