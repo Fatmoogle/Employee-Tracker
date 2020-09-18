@@ -151,7 +151,6 @@ function addEmployee() {
         ]).then(userInput => {
             // console.log(roles.indexOf("Salesperson"));
             const index = roles.indexOf(userInput.role) + 1;
-            console.log(index);
             connection.query("INSERT INTO employee SET ?",
             {
                 first_name: userInput.firstName,
