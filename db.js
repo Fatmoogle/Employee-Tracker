@@ -65,9 +65,6 @@ function beginApp() {
             case "Update Employee Role":
                 updateEmRole();
                 break;
-            case "Remove Employee":
-                removeEmployee();
-                break;
             case "Quit":
                 console.log("Goodbye!")
                 connection.end();
@@ -75,7 +72,43 @@ function beginApp() {
     });
 }
 
-// Function that adds an employee
+// Function to VIEW all employees
+function viewEmployees() {
+    connection.query("SELECT first_name, last_name, title, salary, manager_id FROM employee JOIN role ON employee.role_id = role.id", (err, result) => {
+        if (err) {
+            throw err;
+        } else {
+            console.table(result);
+            beginApp();
+        }
+    });
+}
+
+// Function to VIEW all departments
+function viewDepartments(){
+    connection.query("SELECT name FROM department", function(err, result){
+      if (err) {
+        throw err 
+        } else {
+          console.table(result);
+          beginApp();
+        }
+    });
+}
+
+// Function to VIEW all employee roles
+function viewRoles() {
+    connection.query("SELECT title, salary, department_id FROM role;", (err, result) => {
+        if (err) {
+            throw err;
+        } else {
+            console.table(result);
+            beginApp();
+        }
+    });
+}
+
+// Function that ADDS an employee
 function addEmployee() {
     connection.query("SELECT title FROM role", (err, result) => {
         let roles = [];
@@ -140,24 +173,8 @@ function addEmployee() {
 
 }
 
-// Function to update employee role
-function updateEmRole() {
 
-};
-
-// Function to view all employees
-function viewEmployees() {
-    connection.query("SELECT first_name, last_name, title, salary, manager_id FROM employee JOIN role ON employee.role_id = role.id", (err, result) => {
-        if (err) {
-            throw err;
-        } else {
-            console.table(result);
-            beginApp();
-        }
-    });
-}
-
-// Function to add employee role
+// Function to ADD employee role
 function addEmRole() {
     inquirer.prompt([
         {
@@ -194,22 +211,7 @@ function addEmRole() {
     });
 }
 
-
-
-// Function to view all employee roles
-function viewRoles() {
-    connection.query("SELECT title, salary, department_id FROM role;", (err, result) => {
-        if (err) {
-            throw err;
-        } else {
-            console.table(result);
-            beginApp();
-        }
-    });
-}
-
-
-// Function to add department. This will create a new department if needed by
+// Function to ADD department. This will create a new department if needed by
 // the employer. If there is no "sales" department, they may add it in.
 function addEmDepartment() {
     inquirer.prompt({
@@ -234,14 +236,50 @@ function addEmDepartment() {
 }
 
 
-// Function to view all departments
-function viewDepartments(){
-    connection.query("SELECT name FROM department", function(err, result){
-      if (err) {
-        throw err 
-        } else {
-          console.table(result);
-          beginApp();
+// Function to UPDATE employee role
+function updateEmRole() {
+connection.query("SELECT id, first_name, last_name FROM employee", (err, result) => {
+    connection.query("SELECT * FROM employee_db.role;", (err1, result1) => {
+    let empArr = [];
+    let roleArr = [];
+    for(var i = 0; i < result.length; i++) {
+        empArr.push({ value: parseInt(result[i].id), name: result[i].first_name + " " + result[i].last_name });
+        // empArr.push(result[i].first_name + " " + result[i].last_name);
+    }
+    for(var i = 0; i < result1.length; i++) {
+        roleArr.push({ value: parseInt(result1[i].id), name: result1[i].title });
+        // roleArr.push(result1[i].title);
+    }
+
+    inquirer.prompt([
+        {
+            type: "list",
+            name: "emp",
+            message: "Which employee would you like to update?",
+            choices: empArr
+        },
+        {
+            type: "list",
+            name: "role",
+            message: "Please specify the role you would like this employee to have.",
+            choices: roleArr
         }
-    });
+    ]).then(userInput => {
+        connection.query("UPDATE employee SET ? WHERE ?",
+        [{
+            role_id: userInput.role
+        },
+        {
+            id: userInput.emp
+        }], beginApp)
+    })})
 }
+)};
+
+
+
+
+
+
+
+
