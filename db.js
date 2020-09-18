@@ -163,7 +163,6 @@ function addEmployee() {
                     throw err;
                 } else {
                     console.log("Employee added!")
-                    console.table(result);
                     beginApp();
                 }
             });
